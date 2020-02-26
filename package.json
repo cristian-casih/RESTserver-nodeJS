@@ -2,7 +2,10 @@
     "name": "07-restserver",
     "version": "1.0.0",
     "description": "",
-    "main": "index.js",
+    "main": "server.js",
+    "engines":{
+        "node":"10.16.1"
+    },
     "scripts": {
         "dev": "nodemon ./server/server",
         "start": "node ./server/server",
