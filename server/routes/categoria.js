@@ -7,31 +7,34 @@ let app = express()
 let Categorias = require("../models/categoria")
 
 app.get("/categoria", verificaToken, (req, res) => {
-  Categorias.find((err, categorias) => {
-    if (err) {
-      return res.status(500).json({
-        ok: true,
-        msg: "Error consult Categorias"
+  Categorias.find({})
+    .populate("usuario")
+    .sort("description")
+    .exec((err, categorias) => {
+      if (err) {
+        return res.status(500).json({
+          ok: true,
+          msg: err
+        })
+      }
+      if (!categorias) {
+        return res.status(400).json({
+          ok: false,
+          err: {
+            msg: "No existen categorias"
+          }
+        })
+      }
+      res.status(200).json({
+        categorias
       })
-    }
-    if (!categorias) {
-      return res.status(400).json({
-        ok: false,
-        err: {
-          msg: "No existen categorias"
-        }
-      })
-    }
-    res.status(200).json({
-      categorias
     })
-  })
 })
 app.post("/categoria", verificaToken, (req, res) => {
   let body = req.body
   let newCategoria = new Categorias({
     description: body.description,
-    usuario: req.usuario_id
+    usuario: req.usuario._id
   })
 
   newCategoria.save((err, categoria) => {
