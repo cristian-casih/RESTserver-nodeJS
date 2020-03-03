@@ -14,14 +14,14 @@ app.get("/categoria", verificaToken, (req, res) => {
       if (err) {
         return res.status(500).json({
           ok: true,
-          msg: err
+          message: err
         })
       }
       if (!categorias) {
         return res.status(400).json({
           ok: false,
           err: {
-            msg: "No existen categorias"
+            message: "No existen categorias"
           }
         })
       }
@@ -48,7 +48,7 @@ app.post("/categoria", verificaToken, (req, res) => {
       return res.status(400).json({
         ok: false,
         err: {
-          msg: "No existe la categoria"
+          message: "No existe la categoria"
         }
       })
     }
@@ -63,14 +63,14 @@ app.get("/categoria/:id", (req, res) => {
     if (err) {
       return res.status(500).json({
         ok: true,
-        msg: "Error al buscar la categoria"
+        message: "Error al buscar la categoria"
       })
     }
     if (!categoria) {
       return res.status(400).json({
         ok: false,
         err: {
-          msg: "No existe la categoria"
+          message: "No existe la categoria"
         }
       })
     }
@@ -101,7 +101,7 @@ app.put("/categoria/:id", verificaToken, (req, res) => {
         return res.status(400).json({
           ok: false,
           err: {
-            msg: "No existe la categoria"
+            message: "No existe la categoria"
           }
         })
       }
@@ -118,14 +118,14 @@ app.delete("/categoria/:id", [verificaToken, vericaAdmin_Role], (req, res) => {
     if (err) {
       return res.status(404).json({
         ok: true,
-        msg: err
+        message: err
       })
     }
     if (!categoria) {
       return res.status(404).json({
         ok: false,
         err: {
-          msg: "No existe la categoria"
+          message: "No existe la categoria"
         }
       })
     }

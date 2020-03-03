@@ -11,7 +11,7 @@ app.get("/producto", verificaToken, (req, res) => {
   let limite = req.query.limite || 5
   limite = Number(limite)
 
-  Producto.find({})
+  Producto.find({ disponible: true })
     .populate("Categoria")
     .populate("Usuario")
     .skip(desde)
@@ -38,6 +38,54 @@ app.get("/producto", verificaToken, (req, res) => {
       })
     })
 })
+app.get('producto/:id', verificaToken, (req, res) => {
+  let id = req.params.id
+  Producto.findById(id)
+    .populate("Categoria")
+    .populate("Usuario")
+    .exec((err, producto) => {
+      if (err) {
+        return res.status(500).json({
+          ok: true,
+          message: "Error al buscar el producto"
+        })
+      }
+      if (!producto) {
+        return res.status(400).json({
+          ok: false,
+          err: {
+            message: "No existe la producto"
+          }
+        })
+      }
+      res.status(200).json({
+        ok: true,
+        producto
+      })
+    })
+})
+//Busqueda en la base de datos mediante el termino y match con expresion regular
+app.get('/producto/buscar/:termino', verificaToken, (req, res) => {
+  let termino = req.params.termino
+  let regex = new RegExp(termino, 'i')
+
+  Producto.find({ nombre: regex })
+    .populate('Categoria', 'nombre')
+    .exec((err, productos) => {
+      if (err) {
+        return res.status(500).json({
+          ok: false,
+          err
+        })
+      }
+      res.status(200).json({
+        ok: true,
+        productos
+      })
+    })
+})
+
+
 app.post("/producto", verificaToken, (req, res) => {
   let body = req.body
   let newProducto = new Producto({
@@ -59,7 +107,7 @@ app.post("/producto", verificaToken, (req, res) => {
       return res.status(400).json({
         ok: false,
         err: {
-          msg: "No existe la producto"
+          message: "No existe la producto"
         }
       })
     }
@@ -98,5 +146,32 @@ app.put("/producto/:id", verificaToken, (req, res) => {
       })
     }
   )
+})
+app.delete('/producto/:id', verificaToken, (req, res) => {
+  let id = req.params.id
+  Producto.findById(id, (err, producto) => {
+    if (err) {
+      return res.status(500).json({
+        ok: false,
+        err
+      })
+    }
+    if (!producto) {
+      return res.status(400).json({
+        ok: false,
+        err: {
+          message: "No existe la producto"
+        }
+      })
+    }
+    producto.disponible = false
+    producto.save((err, producto) => {
+      res.status(200).json({
+        ok: true,
+        producto,
+        message: 'Producto desabilitadp'
+      })
+    })
+  })
 })
 module.exports = app
