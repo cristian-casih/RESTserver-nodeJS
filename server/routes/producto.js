@@ -12,8 +12,8 @@ app.get("/producto", verificaToken, (req, res) => {
   limite = Number(limite)
 
   Producto.find({ disponible: true })
-    .populate("Categoria")
-    .populate("Usuario")
+    .populate("categoria")
+    .populate("usuario")
     .skip(desde)
     .limit(limite)
     .exec((err, productos) => {
@@ -41,8 +41,8 @@ app.get("/producto", verificaToken, (req, res) => {
 app.get('producto/:id', verificaToken, (req, res) => {
   let id = req.params.id
   Producto.findById(id)
-    .populate("Categoria")
-    .populate("Usuario")
+    .populate("categoria")
+    .populate("usuario")
     .exec((err, producto) => {
       if (err) {
         return res.status(500).json({
@@ -70,7 +70,7 @@ app.get('/producto/buscar/:termino', verificaToken, (req, res) => {
   let regex = new RegExp(termino, 'i')
 
   Producto.find({ nombre: regex })
-    .populate('Categoria', 'nombre')
+    .populate('categoria', 'description')
     .exec((err, productos) => {
       if (err) {
         return res.status(500).json({
@@ -169,7 +169,7 @@ app.delete('/producto/:id', verificaToken, (req, res) => {
       res.status(200).json({
         ok: true,
         producto,
-        message: 'Producto desabilitadp'
+        message: 'Producto desabilitado'
       })
     })
   })
