@@ -1,10 +1,10 @@
-const express = require("express")
-let { verificaToken } = require("../middlewares/autenticacion")
-let Producto = require("../models/producto")
+const express = require('express')
+let { verificaToken } = require('../middlewares/autenticacion')
+let Producto = require('../models/producto')
 
 let app = express()
 
-app.get("/producto", verificaToken, (req, res) => {
+app.get('/producto', verificaToken, (req, res) => {
   let desde = req.query.desde || 0
   desde = Number(desde)
 
@@ -12,8 +12,8 @@ app.get("/producto", verificaToken, (req, res) => {
   limite = Number(limite)
 
   Producto.find({ disponible: true })
-    .populate("categoria")
-    .populate("usuario")
+    .populate('categoria')
+    .populate('usuario')
     .skip(desde)
     .limit(limite)
     .exec((err, productos) => {
@@ -21,7 +21,7 @@ app.get("/producto", verificaToken, (req, res) => {
         return res.status(500).json({
           ok: true,
           err: {
-            message: "Error en la consulta de Productos"
+            message: 'Error en la consulta de Productos'
           }
         })
       }
@@ -29,7 +29,7 @@ app.get("/producto", verificaToken, (req, res) => {
         return res.status(404).json({
           ok: false,
           err: {
-            message: "No existen productos"
+            message: 'No existen productos'
           }
         })
       }
@@ -41,20 +41,20 @@ app.get("/producto", verificaToken, (req, res) => {
 app.get('producto/:id', verificaToken, (req, res) => {
   let id = req.params.id
   Producto.findById(id)
-    .populate("categoria")
-    .populate("usuario")
+    .populate('categoria')
+    .populate('usuario')
     .exec((err, producto) => {
       if (err) {
         return res.status(500).json({
           ok: true,
-          message: "Error al buscar el producto"
+          message: 'Error al buscar el producto'
         })
       }
       if (!producto) {
         return res.status(400).json({
           ok: false,
           err: {
-            message: "No existe la producto"
+            message: 'No existe la producto'
           }
         })
       }
@@ -85,8 +85,7 @@ app.get('/producto/buscar/:termino', verificaToken, (req, res) => {
     })
 })
 
-
-app.post("/producto", verificaToken, (req, res) => {
+app.post('/producto', verificaToken, (req, res) => {
   let body = req.body
   let newProducto = new Producto({
     nombre: body.nombre,
@@ -107,7 +106,7 @@ app.post("/producto", verificaToken, (req, res) => {
       return res.status(400).json({
         ok: false,
         err: {
-          message: "No existe la producto"
+          message: 'No existe la producto'
         }
       })
     }
@@ -117,7 +116,7 @@ app.post("/producto", verificaToken, (req, res) => {
     })
   })
 })
-app.put("/producto/:id", verificaToken, (req, res) => {
+app.put('/producto/:id', verificaToken, (req, res) => {
   let id = req.params.id
   let body = req.body
   let desProducto = {
@@ -141,7 +140,7 @@ app.put("/producto/:id", verificaToken, (req, res) => {
       }
       res.json({
         ok: true,
-        messagge: "categoria actualizada",
+        messagge: 'categoria actualizada',
         producto
       })
     }
@@ -160,7 +159,7 @@ app.delete('/producto/:id', verificaToken, (req, res) => {
       return res.status(400).json({
         ok: false,
         err: {
-          message: "No existe la producto"
+          message: 'No existe la producto'
         }
       })
     }
