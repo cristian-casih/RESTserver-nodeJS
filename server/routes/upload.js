@@ -47,15 +47,16 @@ app.put('/upload/:tipo/:id', function(req, res) {
   let nombreArchivo = `${id}-${new Date().getMilliseconds()}.${extension}`
 
   archivo.mv(`uploads/${tipo}/${nombreArchivo}`, err => {
-    if (err)
+    if (err) {
       return res.status(500).json({
         ok: false,
         err
       })
+    }
     if (tipo === 'productos') {
-      imagenProducto(id, res)
+      imagenProducto(id, res, nombreArchivo)
     } else {
-      imagenUsuario(id, res)
+      imagenUsuario(id, res, nombreArchivo)
     }
   })
   function imagenUsuario(id, res, nombreArchivo) {
